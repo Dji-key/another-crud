@@ -1,10 +1,12 @@
-package ru.dohod.service.implementations;
+package ru.dohod.service.impldefault;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.dohod.dao.exception.ClientNotFoundException;
 import ru.dohod.dao.interfaces.AddressDao;
 import ru.dohod.dto.AddressDto;
+import ru.dohod.entity.Address;
 import ru.dohod.service.interfaces.AddressService;
 
 import java.util.List;
@@ -29,5 +31,17 @@ public class AddressServiceImpl implements AddressService {
                 .parallelStream()
                 .map(address -> mapper.map(address, AddressDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public AddressDto addByClientId(Long clientId, AddressDto addressDto) throws ClientNotFoundException {
+        Address address = mapper.map(addressDto, Address.class);
+        Address saved = addressDao.addByClientId(clientId, address);
+        return mapper.map(saved, AddressDto.class);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        addressDao.deleteById(id);
     }
 }

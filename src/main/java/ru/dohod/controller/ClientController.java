@@ -3,6 +3,7 @@ package ru.dohod.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,42 +32,27 @@ public class ClientController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAll() {
-        try {
-            return new ResponseEntity<>(clientService.getAll(), HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(clientService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> findByName(@RequestParam String name) {
-        try {
-            return new ResponseEntity<>(clientService.findByName(name), HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(clientService.findByName(name), HttpStatus.OK);
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody ClientDto clientDto) {
-        try {
-            return new ResponseEntity<>(clientService.save(clientDto), HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(clientService.save(clientDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable Long id) {
         try {
-            clientService.delete(id);
+            clientService.deleteById(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (EmptyResultDataAccessException e) {
+            logger.info(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
 }

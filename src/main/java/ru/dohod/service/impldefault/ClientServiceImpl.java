@@ -1,4 +1,4 @@
-package ru.dohod.service.implementations;
+package ru.dohod.service.impldefault;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ public class ClientServiceImpl implements ClientService {
         this.clientDao = clientDao;
     }
 
+    @Override
     public List<ClientDto> getAll() {
         return clientDao.getAll()
                 .parallelStream()
@@ -31,6 +32,7 @@ public class ClientServiceImpl implements ClientService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<ClientDto> findByName(String name) {
         return clientDao.findByName(name)
                 .parallelStream()
@@ -39,8 +41,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void delete(Long id) {
-        clientDao.delete(id);
+    public void deleteById(Long id) {
+        clientDao.deleteById(id);
     }
 
     @Override
